@@ -18,6 +18,13 @@ class DatabaseSeeder extends Seeder
         $this->call([
             WeightProfileSeeder::class,
             CompatibilityRuleSeeder::class,
+            CpuSeeder::class,
+            GpuSeeder::class,
+            RamSeeder::class,
+            MotherboardSeeder::class,
+            PsuSeeder::class,
+            StorageSeeder::class,
+            CasingSeeder::class,
         ]);
     }
 }
