@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('cpus', function (Blueprint $table) {
@@ -16,13 +13,11 @@ return new class extends Migration
             $table->string('nama');
             $table->string('socket');
             $table->decimal('harga', 12, 2);
+            $table->boolean('punya_igpu')->default(false);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('cpus');

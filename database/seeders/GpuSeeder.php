@@ -10,6 +10,7 @@ class GpuSeeder extends Seeder
     public function run(): void
     {
         DB::table('gpus')->insert([
+            ['nama' => 'Tanpa GPU Tambahan (Grafis Onboard)', 'watt_rekomendasi' => 0, 'harga' => 0],
             ['nama' => 'NVIDIA GTX 1650 4GB', 'watt_rekomendasi' => 300, 'harga' => 2150000],
             ['nama' => 'NVIDIA GTX 1660 Super 6GB', 'watt_rekomendasi' => 450, 'harga' => 2775000],
             ['nama' => 'NVIDIA RTX 3050 8GB', 'watt_rekomendasi' => 450, 'harga' => 3700000],
