@@ -71,7 +71,7 @@ class RecommendationService
         $profile = WeightProfile::where('kebutuhan', $kebutuhan)->first();
 
         if (!$profile) {
-            return ['sukses' => false, 'pesan' => 'Profil kebutuhan tidak ditemukan.'];
+            return ['sukses' => false, 'pesan' => __('Profil kebutuhan tidak ditemukan.')];
         }
 
         $alokasiMotherboard = $budget * self::RESERVE_MOTHERBOARD;
@@ -80,18 +80,16 @@ class RecommendationService
 
         $gpuTermurahDedicated = Gpu::where('harga', '>', 0)->min('harga');
 
-        // Percobaan pertama: asumsikan tidak butuh iGPU
         $alokasi = $this->hitungAlokasi($budgetUtama, $profile, false);
         if ($alokasi === null) {
-            return ['sukses' => false, 'pesan' => 'Budget terlalu kecil untuk kombinasi komponen minimum. Silakan naikkan budget Anda.'];
+            return ['sukses' => false, 'pesan' => __('Budget terlalu kecil untuk kombinasi komponen minimum. Silakan naikkan budget Anda.')];
         }
 
         $butuhIgpu = $alokasi['gpu'] < $gpuTermurahDedicated;
         if ($butuhIgpu) {
-            // Hitung ulang dengan floor CPU yang wajib punya iGPU
             $alokasi = $this->hitungAlokasi($budgetUtama, $profile, true);
             if ($alokasi === null) {
-                return ['sukses' => false, 'pesan' => 'Budget terlalu kecil untuk kombinasi komponen minimum. Silakan naikkan budget Anda.'];
+                return ['sukses' => false, 'pesan' => __('Budget terlalu kecil untuk kombinasi komponen minimum. Silakan naikkan budget Anda.')];
             }
         }
 
@@ -100,7 +98,7 @@ class RecommendationService
             ->when($butuhIgpu, fn($query) => $query->where('punya_igpu', true))
             ->get();
         if ($kandidatCpu->isEmpty()) {
-            return ['sukses' => false, 'pesan' => 'Tidak ditemukan CPU yang sesuai dengan budget. Silakan naikkan budget Anda.'];
+            return ['sukses' => false, 'pesan' => __('Tidak ditemukan CPU yang sesuai dengan budget. Silakan naikkan budget Anda.')];
         }
         $cpu = $this->dss->pilihTerbaik($kandidatCpu, $profile->bobot_cpu);
 
@@ -109,12 +107,12 @@ class RecommendationService
             return $this->expertSystem->isCompatible('cpus', $cpu, 'motherboards', $mobo);
         });
         if ($kandidatMobo->isEmpty()) {
-            return ['sukses' => false, 'pesan' => 'Tidak ditemukan Motherboard yang kompatibel dan sesuai budget. Silakan naikkan budget Anda.'];
+            return ['sukses' => false, 'pesan' => __('Tidak ditemukan Motherboard yang kompatibel dan sesuai budget. Silakan naikkan budget Anda.')];
         }
         $motherboard = $kandidatMobo->sortBy('harga')->first();
         $this->ruleTrace[] = [
             'status' => true,
-            'pesan' => "Socket CPU ({$cpu->socket}) cocok dengan Motherboard ({$motherboard->socket})",
+            'pesan' => __('Socket CPU (:a) cocok dengan Motherboard (:b)', ['a' => $cpu->socket, 'b' => $motherboard->socket]),
         ];
 
         // 5. Pilih RAM
@@ -122,16 +120,16 @@ class RecommendationService
             return $this->expertSystem->isCompatible('rams', $ram, 'motherboards', $motherboard);
         });
         if ($kandidatRam->isEmpty()) {
-            return ['sukses' => false, 'pesan' => 'Tidak ditemukan RAM yang kompatibel dan sesuai budget. Silakan naikkan budget Anda.'];
+            return ['sukses' => false, 'pesan' => __('Tidak ditemukan RAM yang kompatibel dan sesuai budget. Silakan naikkan budget Anda.')];
         }
         $ram = $this->dss->pilihTerbaik($kandidatRam, $profile->bobot_ram);
         $this->ruleTrace[] = [
             'status' => true,
-            'pesan' => "Tipe RAM ({$ram->tipe_ddr}) cocok dengan Motherboard ({$motherboard->tipe_ram_supported})",
+            'pesan' => __('Tipe RAM (:a) cocok dengan Motherboard (:b)', ['a' => $ram->tipe_ddr, 'b' => $motherboard->tipe_ram_supported]),
         ];
         $this->ruleTrace[] = [
             'status' => true,
-            'pesan' => "Kapasitas RAM ({$ram->kapasitas}GB) tidak melebihi maksimal slot Motherboard ({$motherboard->kapasitas_maks_per_slot}GB)",
+            'pesan' => __('Kapasitas RAM (:aGB) tidak melebihi maksimal slot Motherboard (:bGB)', ['a' => $ram->kapasitas, 'b' => $motherboard->kapasitas_maks_per_slot]),
         ];
 
         // 6. Pilih GPU
@@ -142,13 +140,13 @@ class RecommendationService
             return true;
         });
         if ($kandidatGpu->isEmpty()) {
-            return ['sukses' => false, 'pesan' => 'Tidak ditemukan GPU yang sesuai dengan budget. Silakan naikkan budget Anda.'];
+            return ['sukses' => false, 'pesan' => __('Tidak ditemukan GPU yang sesuai dengan budget. Silakan naikkan budget Anda.')];
         }
         $gpu = $this->dss->pilihTerbaik($kandidatGpu, $profile->bobot_gpu);
         if ($gpu->harga == 0) {
             $this->ruleTrace[] = [
                 'status' => true,
-                'pesan' => "CPU ({$cpu->nama}) memiliki integrated graphics, GPU tambahan tidak diperlukan",
+                'pesan' => __('CPU (:a) memiliki integrated graphics, GPU tambahan tidak diperlukan', ['a' => $cpu->nama]),
             ];
         }
 
@@ -157,12 +155,12 @@ class RecommendationService
             return $this->expertSystem->isCompatible('psus', $psu, 'gpus', $gpu);
         });
         if ($kandidatPsu->isEmpty()) {
-            return ['sukses' => false, 'pesan' => 'Tidak ditemukan PSU yang cukup daya untuk GPU terpilih.'];
+            return ['sukses' => false, 'pesan' => __('Tidak ditemukan PSU yang cukup daya untuk GPU terpilih.')];
         }
         $psu = $kandidatPsu->sortBy('harga')->first();
         $this->ruleTrace[] = [
             'status' => true,
-            'pesan' => "Kapasitas PSU ({$psu->kapasitas_watt}W) mencukupi kebutuhan GPU ({$gpu->watt_rekomendasi}W rekomendasi)",
+            'pesan' => __('Kapasitas PSU (:aW) mencukupi kebutuhan GPU (:bW rekomendasi)', ['a' => $psu->kapasitas_watt, 'b' => $gpu->watt_rekomendasi]),
         ];
 
         // 8. Pilih Casing
@@ -170,18 +168,18 @@ class RecommendationService
             return $this->expertSystem->isCasingCompatible($casing, $motherboard);
         });
         if ($kandidatCasing->isEmpty()) {
-            return ['sukses' => false, 'pesan' => 'Tidak ditemukan Casing yang sesuai untuk Motherboard terpilih dan budget. Silakan naikkan budget Anda.'];
+            return ['sukses' => false, 'pesan' => __('Tidak ditemukan Casing yang sesuai untuk Motherboard terpilih dan budget. Silakan naikkan budget Anda.')];
         }
         $casing = $kandidatCasing->sortBy('harga')->first();
         $this->ruleTrace[] = [
             'status' => true,
-            'pesan' => "Form factor Casing ({$casing->form_factor}) mencukupi ukuran Motherboard ({$motherboard->form_factor})",
+            'pesan' => __('Form factor Casing (:a) mencukupi ukuran Motherboard (:b)', ['a' => $casing->form_factor, 'b' => $motherboard->form_factor]),
         ];
 
         // 9. Pilih Storage
         $kandidatStorage = Storage::where('harga', '<=', $alokasi['storage'])->get();
         if ($kandidatStorage->isEmpty()) {
-            return ['sukses' => false, 'pesan' => 'Tidak ditemukan Storage yang sesuai dengan budget. Silakan naikkan budget Anda.'];
+            return ['sukses' => false, 'pesan' => __('Tidak ditemukan Storage yang sesuai dengan budget. Silakan naikkan budget Anda.')];
         }
         $storage = $this->dss->pilihTerbaik($kandidatStorage, $profile->bobot_storage);
 
@@ -189,7 +187,7 @@ class RecommendationService
             + $psu->harga + $casing->harga + $storage->harga;
 
         if ($totalHarga > $budget) {
-            return ['sukses' => false, 'pesan' => 'Kombinasi komponen yang kompatibel melebihi budget Anda. Silakan naikkan budget Anda.'];
+            return ['sukses' => false, 'pesan' => __('Kombinasi komponen yang kompatibel melebihi budget Anda. Silakan naikkan budget Anda.')];
         }
 
         return [

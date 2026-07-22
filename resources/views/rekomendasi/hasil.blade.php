@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Hasil Rekomendasi - RakitPC')
+@section('title', 'Hasil Rekomendasi - Racikin')
 
 @section('content')
 
@@ -12,10 +12,10 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
         </svg>
     </div>
-    <h1 class="text-2xl font-bold text-slate-800 mb-3">Rekomendasi Tidak Ditemukan</h1>
+    <h1 class="text-2xl font-bold text-slate-800 mb-3">{{ __('Rekomendasi Tidak Ditemukan') }}</h1>
     <p class="text-slate-500 mb-8">{{ $hasil['pesan'] }}</p>
     <a href="{{ route('rekomendasi.form') }}" class="inline-flex items-center gap-2 bg-sky-500 hover:bg-sky-400 text-white font-semibold px-6 py-3 rounded-xl transition shadow-md">
-        Coba Lagi
+        {{ __('Coba Lagi') }}
     </a>
 </section>
 
@@ -43,10 +43,10 @@
 <section class="gradient-navy py-16">
     <div class="max-w-4xl mx-auto px-6 text-center">
         <span class="inline-block bg-emerald-500/20 text-emerald-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-4 border border-emerald-500/30">
-            ✓ Kombinasi Kompatibel Ditemukan
+            ✓ {{ __('Kombinasi Kompatibel Ditemukan') }}
         </span>
-        <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-3">Rekomendasi Rakitan PC Kamu</h1>
-        <p class="text-slate-300">Berdasarkan budget Rp {{ number_format($hasil['budget'], 0, ',', '.') }} untuk kebutuhan {{ ucfirst(request('kebutuhan') ?? '') }}</p>
+        <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-3">{{ __('Rekomendasi Rakitan PC Kamu') }}</h1>
+        <p class="text-slate-300">{{ __('berdasarkan budget') }} Rp {{ number_format($hasil['budget'], 0, ',', '.') }} {{ __('untuk kebutuhan') }} {{ __(ucfirst(request('kebutuhan') ?? '')) }}</p>
     </div>
 </section>
 
@@ -55,11 +55,11 @@
     <div class="bg-white rounded-2xl shadow-xl border border-slate-100 p-6 md:p-8 mb-6">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-                <p class="text-sm text-slate-400 mb-1">Total Harga Rakitan</p>
+                <p class="text-sm text-slate-400 mb-1">{{ __('Total Harga Rakitan') }}</p>
                 <p class="text-3xl font-extrabold text-slate-800">Rp {{ number_format($hasil['total_harga'], 0, ',', '.') }}</p>
             </div>
             <div class="text-left md:text-right">
-                <p class="text-sm text-slate-400 mb-1">Sisa dari Budget</p>
+                <p class="text-sm text-slate-400 mb-1">{{ __('Sisa dari Budget') }}</p>
                 <p class="text-xl font-bold text-emerald-500">Rp {{ number_format($sisaBudget, 0, ',', '.') }}</p>
             </div>
         </div>
@@ -68,14 +68,14 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         @foreach ($items as $item)
         <div class="bg-white rounded-2xl shadow-md border border-slate-100 p-6 flex items-start gap-4">
-            <div class="w-12 h-12 bg-sky-100 rounded-xl flex items-center justify-center shrink-0">
-                <span class="text-sky-600 font-bold text-xs">{{ $item['label'] }}</span>
+            <div class="h-12 px-3 bg-sky-100 rounded-xl flex items-center justify-center shrink-0">
+                <span class="text-sky-600 font-bold text-xs whitespace-nowrap">{{ $item['label'] }}</span>
             </div>
             <div class="flex-1 min-w-0">
                 <p class="font-semibold text-slate-800 leading-snug">{{ $item['data']->nama }}</p>
                 <p class="text-xs text-slate-400 mt-1">{{ $item['sub'] }}</p>
                 <p class="text-sky-600 font-bold text-sm mt-2">
-                    {{ $item['data']->harga == 0 ? 'Gratis (Bawaan CPU)' : 'Rp ' . number_format($item['data']->harga, 0, ',', '.') }}
+                    {{ $item['data']->harga == 0 ? __('Gratis (Bawaan CPU)') : 'Rp ' . number_format($item['data']->harga, 0, ',', '.') }}
                 </p>
             </div>
         </div>
@@ -83,8 +83,8 @@
     </div>
 
     <div class="bg-white rounded-2xl shadow-md border border-slate-100 p-6 md:p-8 mb-6">
-        <h3 class="font-bold text-slate-800 mb-1">Alokasi Budget per Kategori</h3>
-        <p class="text-xs text-slate-400 mb-5">Perhitungan DSS (SAW) membagi budget berdasarkan bobot kebutuhan {{ ucfirst(request('kebutuhan') ?? '') }}</p>
+        <h3 class="font-bold text-slate-800 mb-1">{{ __('Alokasi Budget per Kategori') }}</h3>
+        <p class="text-xs text-slate-400 mb-5">{{ __('Perhitungan DSS (SAW) membagi budget berdasarkan bobot kebutuhan') }} {{ __(ucfirst(request('kebutuhan') ?? '')) }}</p>
 
         <div class="w-full h-8 rounded-full overflow-hidden flex mb-4 shadow-inner bg-slate-100">
             @foreach ($hasil['alokasi_budget'] as $label => $persen)
@@ -107,7 +107,7 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <p class="font-semibold text-emerald-700 text-sm">Verifikasi Kompatibilitas Sistem</p>
+            <p class="font-semibold text-emerald-700 text-sm">{{ __('Verifikasi Kompatibilitas Sistem') }}</p>
         </div>
         <div class="space-y-2.5">
             @foreach ($hasil['rule_trace'] as $trace)
@@ -126,17 +126,17 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         <div>
-            <p class="font-semibold text-slate-600 text-sm">Catatan</p>
-            <p class="text-slate-500 text-xs mt-1 leading-relaxed">Rekomendasi ini mencakup komponen inti (CPU, Motherboard, RAM, GPU, PSU, Storage, Casing). Komponen tambahan seperti kipas CPU/casing, thermal paste, dan kabel dapat disesuaikan sendiri sesuai selera dan kebutuhan Anda.</p>
+            <p class="font-semibold text-slate-600 text-sm">{{ __('Catatan') }}</p>
+            <p class="text-slate-500 text-xs mt-1 leading-relaxed">{{ __('Rekomendasi ini mencakup komponen inti (CPU, Motherboard, RAM, GPU, PSU, Storage, Casing). Komponen tambahan seperti kipas CPU/casing, thermal paste, dan kabel dapat disesuaikan sendiri sesuai selera dan kebutuhan Anda.') }}</p>
         </div>
     </div>
 
     <div class="flex flex-col sm:flex-row gap-3">
         <a href="{{ route('rekomendasi.form') }}" class="flex-1 text-center bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-semibold py-3.5 rounded-xl transition">
-            Coba Budget Lain
+            {{ __('Coba Budget Lain') }}
         </a>
         <a href="{{ route('home') }}" class="flex-1 text-center bg-sky-500 hover:bg-sky-400 text-white font-semibold py-3.5 rounded-xl transition shadow-md">
-            Kembali ke Beranda
+            {{ __('Kembali ke Beranda') }}
         </a>
     </div>
 
