@@ -7,10 +7,10 @@
 <section class="gradient-navy py-16">
     <div class="max-w-3xl mx-auto px-6 text-center">
         <span class="inline-block bg-sky-500/20 text-sky-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-4 border border-sky-500/30">
-            {{ __('Langkah 1 dari 1') }}
+            {{ __('🖥️ Rekomendasi Rakitan PC') }}
         </span>
         <h1 class="text-3xl md:text-4xl font-extrabold text-white mb-3">{{ __('Ceritakan Kebutuhanmu') }}</h1>
-        <p class="text-slate-300">{{ __('Masukkan budget dan pilih kebutuhan utama, sistem akan menghitung kombinasi terbaik untukmu.') }}</p>
+        <p class="text-slate-300">{{ __('Masukkan budget dan pilih kebutuhan utama, sistem akan merekomendasikan rakitan PC (CPU, GPU, RAM, dan komponen lainnya) yang paling sesuai untukmu.') }}</p>
     </div>
 </section>
 
@@ -30,7 +30,7 @@
         <form action="{{ route('rekomendasi.proses') }}" method="POST" id="formRekomendasi" novalidate>
             @csrf
 
-            <div class="mb-8">
+            <div class="mb-6">
                 <label for="budget_display" class="block text-sm font-semibold text-slate-700 mb-2">{{ __('Budget Anda (Rp)') }}</label>
                 <div class="relative">
                     <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 font-medium">Rp</span>
@@ -41,6 +41,29 @@
                 </div>
                 <p class="text-xs text-slate-400 mt-2" id="budgetHint">{{ __('Minimal Rp 1.000.000. Jika kombinasi tidak ditemukan, sistem akan meminta Anda menaikkan budget.') }}</p>
                 <p class="text-xs text-red-500 mt-2 hidden" id="budgetError">{{ __('Mohon isi budget terlebih dahulu.') }}</p>
+            </div>
+
+            <div class="mb-8">
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                    <p class="text-xs font-semibold text-slate-500 mb-2">{{ __('Panduan kisaran budget (opsional, Anda tetap bisa mengisi nominal bebas)') }}</p>
+                    <div class="grid grid-cols-3 gap-3 text-center">
+                        <div>
+                            <span class="block text-base">💸</span>
+                            <span class="block text-xs font-semibold text-slate-700">{{ __('Hemat') }}</span>
+                            <span class="block text-[11px] text-slate-400">{{ __('mulai ± Rp 9 jt') }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-base">⚖️</span>
+                            <span class="block text-xs font-semibold text-slate-700">{{ __('Sedang') }}</span>
+                            <span class="block text-[11px] text-slate-400">{{ __('± Rp 15 jt') }}</span>
+                        </div>
+                        <div>
+                            <span class="block text-base">👑</span>
+                            <span class="block text-xs font-semibold text-slate-700">{{ __('Maksimal') }}</span>
+                            <span class="block text-[11px] text-slate-400">{{ __('mulai ± Rp 25 jt') }}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="mb-8">
