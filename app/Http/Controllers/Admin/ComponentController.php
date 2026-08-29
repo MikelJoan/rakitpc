@@ -29,6 +29,7 @@ class ComponentController extends Controller
                     'socket' => ['type' => 'text', 'label' => 'Socket'],
                     'harga' => ['type' => 'number', 'label' => 'Harga (Rp)'],
                     'punya_igpu' => ['type' => 'checkbox', 'label' => 'Punya Integrated Graphics'],
+                    'link_produk' => ['type' => 'url', 'label' => 'Link Produk (opsional)', 'required' => false],
                 ],
             ],
             'gpus' => [
@@ -38,6 +39,7 @@ class ComponentController extends Controller
                     'nama' => ['type' => 'text', 'label' => 'Nama'],
                     'watt_rekomendasi' => ['type' => 'number', 'label' => 'Watt Rekomendasi'],
                     'harga' => ['type' => 'number', 'label' => 'Harga (Rp)'],
+                    'link_produk' => ['type' => 'url', 'label' => 'Link Produk (opsional)', 'required' => false],
                 ],
             ],
             'rams' => [
@@ -48,6 +50,7 @@ class ComponentController extends Controller
                     'tipe_ddr' => ['type' => 'text', 'label' => 'Tipe DDR'],
                     'kapasitas' => ['type' => 'number', 'label' => 'Kapasitas (GB)'],
                     'harga' => ['type' => 'number', 'label' => 'Harga (Rp)'],
+                    'link_produk' => ['type' => 'url', 'label' => 'Link Produk (opsional)', 'required' => false],
                 ],
             ],
             'motherboards' => [
@@ -61,6 +64,7 @@ class ComponentController extends Controller
                     'kapasitas_maks_per_slot' => ['type' => 'number', 'label' => 'Kapasitas Maks per Slot (GB)'],
                     'form_factor' => ['type' => 'text', 'label' => 'Form Factor'],
                     'harga' => ['type' => 'number', 'label' => 'Harga (Rp)'],
+                    'link_produk' => ['type' => 'url', 'label' => 'Link Produk (opsional)', 'required' => false],
                 ],
             ],
             'psus' => [
@@ -70,6 +74,7 @@ class ComponentController extends Controller
                     'nama' => ['type' => 'text', 'label' => 'Nama'],
                     'kapasitas_watt' => ['type' => 'number', 'label' => 'Kapasitas Watt'],
                     'harga' => ['type' => 'number', 'label' => 'Harga (Rp)'],
+                    'link_produk' => ['type' => 'url', 'label' => 'Link Produk (opsional)', 'required' => false],
                 ],
             ],
             'storages' => [
@@ -80,6 +85,7 @@ class ComponentController extends Controller
                     'tipe' => ['type' => 'text', 'label' => 'Tipe (SSD/HDD)'],
                     'kapasitas' => ['type' => 'number', 'label' => 'Kapasitas (GB)'],
                     'harga' => ['type' => 'number', 'label' => 'Harga (Rp)'],
+                    'link_produk' => ['type' => 'url', 'label' => 'Link Produk (opsional)', 'required' => false],
                 ],
             ],
             'casings' => [
@@ -89,6 +95,7 @@ class ComponentController extends Controller
                     'nama' => ['type' => 'text', 'label' => 'Nama'],
                     'form_factor' => ['type' => 'text', 'label' => 'Form Factor'],
                     'harga' => ['type' => 'number', 'label' => 'Harga (Rp)'],
+                    'link_produk' => ['type' => 'url', 'label' => 'Link Produk (opsional)', 'required' => false],
                 ],
             ],
         ];
@@ -155,9 +162,13 @@ class ComponentController extends Controller
     {
         $rules = [];
         foreach ($config['fields'] as $field => $meta) {
+            $isRequired = $meta['required'] ?? true;
+            $prefix = $isRequired ? 'required' : 'nullable';
+
             $rules[$field] = match ($meta['type']) {
-                'text' => 'required|string|max:255',
-                'number' => 'required|numeric',
+                'text' => "{$prefix}|string|max:255",
+                'number' => "{$prefix}|numeric",
+                'url' => "{$prefix}|string|max:500",
                 'checkbox' => 'nullable|boolean',
                 default => 'nullable',
             };

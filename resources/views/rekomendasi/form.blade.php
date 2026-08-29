@@ -50,7 +50,7 @@
                         <div>
                             <span class="block text-base">💸</span>
                             <span class="block text-xs font-semibold text-slate-700">{{ __('Hemat') }}</span>
-                            <span class="block text-[11px] text-slate-400">{{ __('mulai ± Rp 9 jt') }}</span>
+                            <span class="block text-[11px] text-slate-400">{{ __('mulai ± Rp 8 jt') }}</span>
                         </div>
                         <div>
                             <span class="block text-base">⚖️</span>

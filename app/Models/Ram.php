@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Ram extends Model
 {
-    protected $fillable = ['nama', 'tipe_ddr', 'kapasitas', 'harga'];
+    protected $fillable = ['nama', 'tipe_ddr', 'kapasitas', 'harga', 'link_produk'];
 }

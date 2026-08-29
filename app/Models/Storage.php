@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Storage extends Model
 {
-    protected $fillable = ['nama', 'tipe', 'kapasitas', 'harga'];
+    protected $fillable = ['nama', 'tipe', 'kapasitas', 'harga', 'link_produk'];
 }

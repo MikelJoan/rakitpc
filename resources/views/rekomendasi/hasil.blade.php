@@ -24,13 +24,13 @@
 @php
     $komponen = $hasil['komponen'];
     $items = [
-        ['label' => 'CPU', 'data' => $komponen['cpu'], 'sub' => $komponen['cpu']->socket],
-        ['label' => 'Motherboard', 'data' => $komponen['motherboard'], 'sub' => $komponen['motherboard']->socket . ' • ' . $komponen['motherboard']->form_factor],
-        ['label' => 'RAM', 'data' => $komponen['ram'], 'sub' => $komponen['ram']->tipe_ddr . ' • ' . $komponen['ram']->kapasitas . 'GB'],
-        ['label' => 'GPU', 'data' => $komponen['gpu'], 'sub' => $komponen['gpu']->harga == 0 ? 'Grafis Onboard' : $komponen['gpu']->watt_rekomendasi . 'W rekomendasi'],
-        ['label' => 'PSU', 'data' => $komponen['psu'], 'sub' => $komponen['psu']->kapasitas_watt . 'W'],
-        ['label' => 'Storage', 'data' => $komponen['storage'], 'sub' => $komponen['storage']->tipe . ' • ' . $komponen['storage']->kapasitas . 'GB'],
-        ['label' => 'Casing', 'data' => $komponen['casing'], 'sub' => $komponen['casing']->form_factor],
+        ['label' => 'CPU', 'gambar' => 'cpu.jpeg', 'data' => $komponen['cpu'], 'sub' => $komponen['cpu']->socket],
+        ['label' => 'Motherboard', 'gambar' => 'motherboard.jpeg', 'data' => $komponen['motherboard'], 'sub' => $komponen['motherboard']->socket . ' • ' . $komponen['motherboard']->form_factor],
+        ['label' => 'RAM', 'gambar' => 'ram.jpeg', 'data' => $komponen['ram'], 'sub' => $komponen['ram']->tipe_ddr . ' • ' . $komponen['ram']->kapasitas . 'GB'],
+        ['label' => 'GPU', 'gambar' => 'gpu.jpeg', 'data' => $komponen['gpu'], 'sub' => $komponen['gpu']->harga == 0 ? 'Grafis Onboard' : $komponen['gpu']->watt_rekomendasi . 'W rekomendasi'],
+        ['label' => 'PSU', 'gambar' => 'psu.jpeg', 'data' => $komponen['psu'], 'sub' => $komponen['psu']->kapasitas_watt . 'W'],
+        ['label' => 'Storage', 'gambar' => 'storage.jpeg', 'data' => $komponen['storage'], 'sub' => $komponen['storage']->tipe . ' • ' . $komponen['storage']->kapasitas . 'GB'],
+        ['label' => 'Casing', 'gambar' => 'casing.jpg', 'data' => $komponen['casing'], 'sub' => $komponen['casing']->form_factor],
     ];
     $sisaBudget = $hasil['budget'] - $hasil['total_harga'];
     $warnaAlokasi = [
@@ -67,18 +67,30 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         @foreach ($items as $item)
-        <div class="bg-white rounded-2xl shadow-md border border-slate-100 p-6 flex items-start gap-4">
-            <div class="h-12 px-3 bg-sky-100 rounded-xl flex items-center justify-center shrink-0">
-                <span class="text-sky-600 font-bold text-xs whitespace-nowrap">{{ $item['label'] }}</span>
+        @php
+            $adaLink = !empty($item['data']->link_produk);
+            $tag = $adaLink ? 'a' : 'div';
+        @endphp
+        <{{ $tag }}
+            @if ($adaLink) href="{{ $item['data']->link_produk }}" target="_blank" rel="noopener noreferrer" @endif
+            class="bg-white rounded-2xl shadow-md border border-slate-100 p-6 flex items-start gap-4 {{ $adaLink ? 'hover:shadow-lg hover:border-sky-200 transition cursor-pointer group' : '' }}"
+        >
+            <div class="w-14 h-14 bg-sky-50 rounded-xl overflow-hidden shrink-0 flex items-center justify-center">
+                <img src="{{ asset('images/komponen/' . $item['gambar']) }}" alt="{{ $item['label'] }}" class="w-full h-full object-cover">
             </div>
             <div class="flex-1 min-w-0">
                 <p class="font-semibold text-slate-800 leading-snug">{{ $item['data']->nama }}</p>
                 <p class="text-xs text-slate-400 mt-1">{{ $item['sub'] }}</p>
-                <p class="text-sky-600 font-bold text-sm mt-2">
-                    {{ $item['data']->harga == 0 ? __('Gratis (Bawaan CPU)') : 'Rp ' . number_format($item['data']->harga, 0, ',', '.') }}
-                </p>
+                <div class="flex items-center justify-between mt-2">
+                    <p class="text-sky-600 font-bold text-sm">
+                        {{ $item['data']->harga == 0 ? __('Gratis (Bawaan CPU)') : 'Rp ' . number_format($item['data']->harga, 0, ',', '.') }}
+                    </p>
+                    @if ($adaLink)
+                        <span class="text-xs text-sky-500 font-medium group-hover:underline whitespace-nowrap ml-2">{{ __('Lihat Produk') }} →</span>
+                    @endif
+                </div>
             </div>
-        </div>
+        </{{ $tag }}>
         @endforeach
     </div>
 

@@ -76,11 +76,12 @@
                             </label>
                         @else
                             <label for="{{ $field }}" class="block text-sm font-semibold text-slate-700 mb-2">{{ $meta['label'] }}</label>
-                            <input type="{{ $meta['type'] }}" name="{{ $field }}" id="{{ $field }}"
+                            <input type="{{ $meta['type'] === 'url' ? 'text' : $meta['type'] }}" name="{{ $field }}" id="{{ $field }}"
                                 value="{{ old($field, $item->$field ?? '') }}"
+                                placeholder="{{ $meta['type'] === 'url' ? 'https://...' : '' }}"
                                 class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:border-transparent transition"
                                 @if ($meta['type'] === 'number') step="any" @endif
-                                required>
+                                @if ($meta['required'] ?? true) required @endif>
                         @endif
                     </div>
                 @endforeach
